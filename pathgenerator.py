@@ -14,38 +14,24 @@ def defineStartAndEndAndGeneratePath(startPosX, startPosY, endPosX, endPosY, bas
     baseMap[startPosX][startPosY] = constants.START
     baseMap[endPosX][endPosY] = constants.END
 
-    generatePathRecursive(startPosX, startPosY, startPosX, startPosY, baseMap)
+    generatePath(startPosX, startPosY, baseMap)
 
 
 def generatePath(currentPosX, currentPosY, baseMap):
-    directions = ['up', 'down', 'left', 'right']
     foundExit = False
 
-    while not foundExit:
-        step = rd.choice(directions)
-        # Try the random step
-        if step == 'up':
-            if hf.checkForOutOfBounds(currentPosX, currentPosY - 1, baseMap):
-                currentPosY -= 1
-            else:
-                continue
-        elif step == 'down':
-            if hf.checkForOutOfBounds(currentPosX, currentPosY + 1, baseMap):
-                currentPosY += 1
-            else:
-                continue
-        elif step == 'left':
-            if hf.checkForOutOfBounds(currentPosX - 1, currentPosY, baseMap):
-                currentPosX -= 1
-            else:
-                continue
-        else:
-            if hf.checkForOutOfBounds(currentPosX + 1, currentPosY, baseMap):
-                currentPosX += 1
-            else:
-                continue
+    previousPosX = currentPosX
+    previousPosY = currentPosY
 
-        # If we didn't hit a continue block, we verified the bounds and updated current positions.
+    while not foundExit:
+        step = generateStep(currentPosX, currentPosY,
+                            previousPosX, previousPosY, baseMap)
+
+        previousPosX = currentPosX
+        previousPosY = currentPosY
+        currentPosX = step[0]
+        currentPosY = step[1]
+
         # Verify that the space we are at is not the exit - if it is the exit, let's leave the loop.
         if baseMap[currentPosX][currentPosY] == constants.END:
             foundExit = True
@@ -55,29 +41,6 @@ def generatePath(currentPosX, currentPosY, baseMap):
         # Assign a path mark
         else:
             baseMap[currentPosX][currentPosY] = constants.SAFE_PATH
-
-
-def generatePathRecursive(currentPosX, currentPosY, previousPosX, previousPosY, baseMap):
-    tempPosX = currentPosX
-    tempPosY = currentPosY
-
-    step = generateStep(currentPosX, currentPosY,
-                        previousPosX, previousPosY, baseMap)
-    currentPosX = step[0]
-    currentPosY = step[1]
-
-    # Verify that the space we are at is not the exit - if it is the exit, end recursion.
-    if baseMap[currentPosX][currentPosY] == constants.END:
-        return
-    # Don't accidentally mark over the entrance
-    elif baseMap[currentPosX][currentPosY] == constants.START:
-        pass
-    # Assign a path mark
-    else:
-        baseMap[currentPosX][currentPosY] = constants.SAFE_PATH
-
-    generatePathRecursive(currentPosX, currentPosY,
-                          tempPosX, tempPosY, baseMap)
 
 
 def generateStep(currentPosX, currentPosY,  previousPosX, previousPosY, baseMap):
