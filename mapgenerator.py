@@ -1,6 +1,4 @@
-import random as rd
 import numpy as np
-import helperfuncs as hf
 import pathgenerator as pg
 import obstaclegenerator as og
 
@@ -18,5 +16,7 @@ def generateMap(width, height, startPosX, startPosY, goalPosX, goalPosY):
     # This ensures that we will not block the path from start to end when we do obstacle/wall generation.
     pg.defineStartAndEndAndGeneratePath(
         startPosX, startPosY, goalPosX, goalPosY, map)
+
+    og.generateObstacles(width, height, map)
 
     return map

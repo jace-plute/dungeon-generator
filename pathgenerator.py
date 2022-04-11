@@ -4,6 +4,7 @@ import helperfuncs as hf
 
 GOAL_X = 0
 GOAL_Y = 0
+WEIGHT_SCALER = 3
 
 
 def defineStartAndEndAndGeneratePath(startPosX, startPosY, endPosX, endPosY, baseMap):
@@ -72,6 +73,6 @@ def generateStep(currentPosX, currentPosY,  previousPosX, previousPosY, baseMap)
         stepsFromGoal.append(abs(GOAL_X - positionX) + abs(GOAL_Y - positionY))
 
     for steps in stepsFromGoal:
-        weights.append((maximumStep - steps) ** 2)
+        weights.append((maximumStep - steps) ** WEIGHT_SCALER)
 
     return rd.choices(possiblePositions, k=1, weights=weights)[0]
