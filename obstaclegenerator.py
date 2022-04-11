@@ -4,13 +4,17 @@ import helperfuncs as hf
 
 WALL_CHOICES = [constants.EMPTY_SPACE, constants.WALL]
 VALID_WALL_POSITIONS = [constants.EMPTY_SPACE]
+
 TRAP_CHOICES = [constants.EMPTY_SPACE, constants.TRAP]
-TRAP_CHOICES_AT_SAFE_PATH = [constants.SAFE_PATH, constants.TRAP]
 VALID_TRAP_POSITIONS = [constants.SAFE_PATH, constants.EMPTY_SPACE]
-TRAP_POSITION_WEIGHTS = [1, 1.2]
+TRAP_WEIGHTS = [5, 1]
+
+ENEMY_CHOICES = [constants.BOSS, constants.ENEMY, constants.EMPTY_SPACE]
+VALID_ENEMY_POSITIONS = [constants.EMPTY_SPACE]
+ENEMY_WEIGHTS = [1, 2, 6]
 
 
-def generateObstacles(width, height, map):
+def generateObstacles(width, height, startPosX, startPosY, goalPosX, goalPosY, map):
     # First, generate our walls.
     generateWalls(width, height, map)
     # Finish wall generation by filling in blocks surrounded on all valid sides with walls.
@@ -60,12 +64,21 @@ def fillInDeadSpace(width, height, map):
 
 
 def generateTraps(width, height, map):
-    # Traps should be slightly more likely to appear on the main path, so that
-    # parties will run into some even if they follow the direct main path exclusively.
+    # Generate traps in a roughly 5:1 ratio of safe to trapped tiles.
+    # This will also clean the SAFE_PATH tiles for us to be EMPTY_SPACES.
     for i in range(width):
         for j in range(height):
-            if map[i][j] in VALID_TRAP_POSITIONS and map[i][j] == constants.SAFE_PATH:
-                map[i][j] = rd.choices(
-                    TRAP_CHOICES_AT_SAFE_PATH, TRAP_POSITION_WEIGHTS, k=1)[0]
-            elif map[i][j] in VALID_TRAP_POSITIONS:
-                map[i][j] = rd.choice(TRAP_CHOICES)
+            if map[i][j] in VALID_TRAP_POSITIONS:
+                map[i][j] = rd.choices(TRAP_CHOICES, TRAP_WEIGHTS, k=1)[0]
+
+
+def generateEnemies(width, height, map):
+    # Generate enemies and bosses.
+    # Place a boss at the goal position every time. Override the exit with it.
+    pass
+
+
+def generateTreasure(width, height, map):
+    # Generate treasure tiles.
+    # Make them more likely in more 'hidden' alcoves.
+    pass

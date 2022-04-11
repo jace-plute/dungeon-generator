@@ -17,6 +17,7 @@ def generateMap(width, height, startPosX, startPosY, goalPosX, goalPosY):
     pg.defineStartAndEndAndGeneratePath(
         startPosX, startPosY, goalPosX, goalPosY, map)
 
-    og.generateObstacles(width, height, map)
+    og.generateObstacles(width, height, startPosX,
+                         startPosY, goalPosX, goalPosY, map)
 
     return map
