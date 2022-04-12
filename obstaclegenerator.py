@@ -13,6 +13,8 @@ ENEMY_CHOICES = [constants.BOSS, constants.ENEMY, constants.EMPTY_SPACE]
 VALID_ENEMY_POSITIONS = [constants.EMPTY_SPACE]
 ENEMY_WEIGHTS = [1, 2, 6]
 
+VALID_BOSS_POSITIONS = [constants.END]
+
 
 def generateObstacles(width, height, startPosX, startPosY, goalPosX, goalPosY, map):
     # First, generate our walls.
@@ -22,6 +24,9 @@ def generateObstacles(width, height, startPosX, startPosY, goalPosX, goalPosY, m
 
     # Next, generate traps.
     generateTraps(width, height, map)
+
+    # Generate some enemies.
+    generateEnemies(width, height, map)
 
 
 def generateWalls(width, height, map):
@@ -72,10 +77,27 @@ def generateTraps(width, height, map):
                 map[i][j] = rd.choices(TRAP_CHOICES, TRAP_WEIGHTS, k=1)[0]
 
 
+def generateHiddenAlcoves(width, height, map):
+    # Generate hidden alcoves, which should only occur in alcoves surrounded by walls.
+    # Ex:
+    # 0 0 0 0 0
+    # S 1 0 0 0
+    # 0 1 0 0 0
+    # 0 0 1 1 0
+    # 1 1 1 0 0
+    # Where the S denotes an entrance to a hidden alcove (secret door).
+    pass
+
+
 def generateEnemies(width, height, map):
     # Generate enemies and bosses.
     # Place a boss at the goal position every time. Override the exit with it.
-    pass
+    for i in range(width):
+        for j in range(height):
+            if map[i][j] in VALID_BOSS_POSITIONS:
+                map[i][j] = constants.BOSS
+            elif map[i][j] in VALID_ENEMY_POSITIONS:
+                map[i][j] = rd.choices(ENEMY_CHOICES, ENEMY_WEIGHTS, k=1)[0]
 
 
 def generateTreasure(width, height, map):
